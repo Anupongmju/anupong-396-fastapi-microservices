@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  service_a:
+    build: ./service_a
+    ports:
+      - "50051:50051"
+
+  service_b:
+    build: ./service_b
+    ports:
+      - "8001:8000"
+    depends_on:
+      - service_a
+
+  service_c:
+    build: ./service_c
+    ports:
+      - "8000:8000"
+    depends_on:
+      - service_b
