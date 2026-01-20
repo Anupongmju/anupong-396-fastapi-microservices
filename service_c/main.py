@@ -1,5 +1,5 @@
-# API Gateway
-# Receives client request and forwards to service_b
+# service_c เป็น API Gateway
+# client จะเรียก service นี้โดยตรง
 
 from fastapi import FastAPI
 import requests
@@ -9,6 +9,8 @@ app = FastAPI()
 
 @app.get("/users")
 def get_users():
-    # Call service_b REST API
+    # ส่ง REST request ไปยัง service_b
     response = requests.get("http://service_b:8000/users")
+
+    # ส่ง response กลับไปให้ client
     return response.json()

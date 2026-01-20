@@ -1,19 +1,20 @@
-# gRPC server for service_a
-# This service provides user data via gRPC
+# ไฟล์นี้ทำหน้าที่เป็น gRPC Server
+# service_a จะให้ข้อมูล user ผ่าน gRPC
 
 import grpc
 from concurrent import futures
-import time
 
-# Import generated classes (generated at runtime)
+# import code ที่ generate จาก proto
 import user_pb2
 import user_pb2_grpc
 
 
+# สร้าง class ที่ implement gRPC service
 class UserService(user_pb2_grpc.UserServiceServicer):
-    # Implement GetUser RPC method
+
+    # ฟังก์ชันนี้จะถูกเรียกเมื่อมี gRPC request เข้ามา
     def GetUser(self, request, context):
-        # Simulated user data
+        # สร้าง response กลับไปให้ client
         return user_pb2.UserResponse(
             id=request.id,
             name="Anupong Mabunrueang",
@@ -22,19 +23,18 @@ class UserService(user_pb2_grpc.UserServiceServicer):
 
 
 def serve():
-    # Create gRPC server
+    # สร้าง gRPC server
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 
-    # Register service
+    # ผูก service เข้ากับ server
     user_pb2_grpc.add_UserServiceServicer_to_server(UserService(), server)
 
-    # Listen on port 50051
+    # เปิด port สำหรับ gRPC
     server.add_insecure_port("[::]:50051")
+
+    # เริ่มทำงาน
     server.start()
+    print("service_a (gRPC Server) running on port 50051")
 
-    print("gRPC Server running on port 50051")
+    # รอรับ request ตลอดเวลา
     server.wait_for_termination()
-
-
-if __name__ == "__main__":
-    serve()
